@@ -1,5 +1,5 @@
 FROM centos:centos7.6.1810
-MAINTAINER chenjh "842761733@qq.com"
+LABEL maintainer="eden.opt@gmail.com"
 ADD jodconverter-web/target/kkFileView-*.tar.gz /opt/
 COPY fonts/* /usr/share/fonts/chienes/
 RUN yum install -y kde-l10n-Chinese &&\
@@ -31,4 +31,4 @@ RUN yum install -y kde-l10n-Chinese &&\
 ENV LANG zh_CN.UTF-8
 ENV LC_ALL zh_CN.UTF-8
 ENV KKFILEVIEW_BIN_FOLDER /opt/kkFileView-2.2.0-SNAPSHOT/bin
-ENTRYPOINT ["java","-Dfile.encoding=UTF-8","-Dsun.java2d.cmm=sun.java2d.cmm.kcms.KcmsServiceProvider","-Dspring.config.location=/opt/kkFileView-2.2.0-SNAPSHOT/config/application.properties","-jar","/opt/kkFileView-2.2.0-SNAPSHOT/bin/kkFileView-2.2.0-SNAPSHOT.jar"]
+ENTRYPOINT ["java", "-Dfile.encoding=UTF-8", "-Dsun.java2d.cmm=sun.java2d.cmm.kcms.KcmsServiceProvider", "-Dspring.config.location=/opt/kkFileView-2.2.0-SNAPSHOT/config/application.properties", "-jar", "/opt/kkFileView-2.2.0-SNAPSHOT/bin/kkFileView-2.2.0-SNAPSHOT.jar"]
