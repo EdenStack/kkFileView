@@ -2,4 +2,4 @@
 mvn clean package -DskipTests\
     -Prelease
     
-docker build -t ccr.ccs.tencentyun.com/io.eden/filepreview:v2.1.0 .
+docker build -t ccr.ccs.tencentyun.com/io.eden/filepreview:v2.1.1 .
