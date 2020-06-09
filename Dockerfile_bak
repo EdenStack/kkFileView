@@ -1,5 +1,6 @@
 FROM centos:centos7.6.1810
 LABEL maintainer="eden.opt@gmail.com"
+
 COPY fonts/* /usr/share/fonts/chienes/
 RUN yum install -y kde-l10n-Chinese &&\
 	yum install -y glibc-common &&\
