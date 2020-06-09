@@ -5,9 +5,11 @@ import cn.keking.hutool.URLUtil;
 import cn.keking.model.FileAttribute;
 import cn.keking.model.ReturnResponse;
 import io.minio.MinioClient;
+import io.minio.errors.InvalidEndpointException;
+import io.minio.errors.InvalidPortException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.*;
@@ -25,12 +27,14 @@ public class DownloadUtils {
 
     private String fileDir = ConfigConstants.getFileDir();
 
-    @Autowired
-    private FileUtils fileUtils;
+    private static volatile MinioClient minioClient;
 
-    private static final String URL_PARAM_FTP_USERNAME = "ftp.username";
-    private static final String URL_PARAM_FTP_PASSWORD = "ftp.password";
-    private static final String URL_PARAM_FTP_CONTROL_ENCODING = "ftp.control.encoding";
+    @Value("${MINIO_ENDPOINT:}")
+    private String minioEndpoint;
+    @Value("${MINIO_ACCESS_KEY:}")
+    private String minioAccessKey;
+    @Value("${MINIO_SECRET_KEY:}")
+    private String minioSecretKey;
 
     /**
      * @param fileAttribute
@@ -63,11 +67,8 @@ public class DownloadUtils {
 
             if (urlAddress.startsWith("minio://")) {
                 try {
-                    final MinioClient minioClient = new MinioClient("http://112.35.139.99:9000",
-                            "B8BAH50WKGY02AVKCR94",
-                            "0STp6RuXwlB2laAhQdbZ8evS+Tg2h4U2U68KhiX8");
                     String[] split = urlAddress.split("/");
-                    in = minioClient.getObject(split[2], split[3]);
+                    in = this.getMinioClient().getObject(split[2], split[3]);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -80,7 +81,7 @@ public class DownloadUtils {
                 in = connection.getInputStream();
             }
 
-            System.out.println(realPath);
+            LOGGER.debug(realPath);
 
             FileOutputStream os = new FileOutputStream(realPath);
             byte[] buffer = new byte[4 * 1024];
@@ -151,4 +152,18 @@ public class DownloadUtils {
             }
         }
     }
+
+    private MinioClient getMinioClient() throws InvalidPortException, InvalidEndpointException {
+        if (minioClient == null) {
+            synchronized (MinioClient.class) {
+                if (minioClient == null) {
+                    minioClient = new MinioClient(this.minioEndpoint,
+                            this.minioAccessKey,
+                            this.minioSecretKey);
+                }
+            }
+        }
+        return minioClient;
+    }
+
 }
