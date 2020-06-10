@@ -9,6 +9,7 @@ import cn.keking.utils.FileUtils;
 import cn.keking.utils.OfficeToPdf;
 import cn.keking.utils.PdfUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -35,6 +36,9 @@ public class OfficeFilePreviewImpl implements FilePreview {
     @Autowired
     private OfficeToPdf officeToPdf;
 
+    @Value("${PREVIEW_BASE_URL:''}")
+    private String previewBaseUrl;
+
     String fileDir = ConfigConstants.getFileDir();
 
     public static final String OFFICE_PREVIEW_TYPE_PDF = "pdf";
@@ -44,10 +48,18 @@ public class OfficeFilePreviewImpl implements FilePreview {
     @Override
     public String filePreviewHandle(String url, Model model, FileAttribute fileAttribute) {
         // 预览Type，参数传了就取参数的，没传取系统默认
-        String officePreviewType = model.asMap().get("officePreviewType") == null ? ConfigConstants.getOfficePreviewType() : model.asMap().get("officePreviewType").toString();
-        String baseUrl = (String) RequestContextHolder.currentRequestAttributes().getAttribute("baseUrl",0);
-        String suffix=fileAttribute.getSuffix();
-        String fileName=fileAttribute.getName();
+        String officePreviewType = model.asMap()
+                .get("officePreviewType") == null ? ConfigConstants.getOfficePreviewType() : model.asMap()
+                .get("officePreviewType")
+                .toString();
+        String baseUrl;
+        if (!StringUtils.isEmpty(this.previewBaseUrl)) {
+            baseUrl = this.previewBaseUrl;
+        } else {
+            baseUrl = (String) RequestContextHolder.currentRequestAttributes().getAttribute("baseUrl", 0);
+        }
+        String suffix = fileAttribute.getSuffix();
+        String fileName = fileAttribute.getName();
         boolean isHtml = suffix.equalsIgnoreCase("xls") || suffix.equalsIgnoreCase("xlsx");
         String pdfName = fileName.substring(0, fileName.lastIndexOf(".") + 1) + (isHtml ? "html" : "pdf");
         String outFilePath = fileDir + pdfName;
@@ -73,13 +85,15 @@ public class OfficeFilePreviewImpl implements FilePreview {
                 }
             }
         }
-        if (!isHtml && baseUrl != null && (OFFICE_PREVIEW_TYPE_IMAGE.equals(officePreviewType) || OFFICE_PREVIEW_TYPE_ALLIMAGES.equals(officePreviewType))) {
+        if (!isHtml && baseUrl != null && (OFFICE_PREVIEW_TYPE_IMAGE.equals(officePreviewType) || OFFICE_PREVIEW_TYPE_ALLIMAGES
+                .equals(officePreviewType))) {
             List<String> imageUrls = pdfUtils.pdf2jpg(outFilePath, pdfName, baseUrl);
             if (imageUrls == null || imageUrls.size() < 1) {
                 model.addAttribute("msg", "office转图片异常，请联系管理员");
-                model.addAttribute("fileType",fileAttribute.getSuffix());
+                model.addAttribute("fileType", fileAttribute.getSuffix());
                 return "fileNotSupported";
             }
+
             model.addAttribute("imgurls", imageUrls);
             model.addAttribute("currentUrl", imageUrls.get(0));
             if (OFFICE_PREVIEW_TYPE_IMAGE.equals(officePreviewType)) {
