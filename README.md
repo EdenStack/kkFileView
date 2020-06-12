@@ -97,6 +97,14 @@ QQ群号：613025121
 1. 新增spring boot profile，支持多环境配置 
 1. 引入pdf.js预览doc等文件，支持doc标题生成pdf预览菜单，支持手机端预览
 
-### 使用登记
-如果这个项目解决了你的实际问题，可在https://gitee.com/kekingcn/file-online-preview/issues/IGSBV
-登记下，如果节省了你的三方预览服务费用，也愿意支持下的话，可点击下方【捐助】请作者喝杯咖啡，也是非常感谢
+### Docker 
+
+```bash
+docker run -d \
+-e MINIO_ENDPOINT='http://111.111.111.111:9000' \
+-e MINIO_ACCESS_KEY='B8BAH50WKGY0XXXYYYZZZ' \
+-e MINIO_SECRET_KEY='0STp6RuXwlB2laAaabbcc' \
+-e PREVIEW_BASE_URL='http://baidu.com/' \
+-v /Users/kkFilePreview/kk.log:/kkFilePreview.log \
+-p 8012:8012 harbor/io.eden/filepreview:v2.1.6
+```
