@@ -9,11 +9,9 @@ import cn.keking.utils.FileUtils;
 import cn.keking.utils.OfficeToPdf;
 import cn.keking.utils.PdfUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
-import org.springframework.web.context.request.RequestContextHolder;
 
 import java.util.List;
 
@@ -36,9 +34,6 @@ public class OfficeFilePreviewImpl implements FilePreview {
     @Autowired
     private OfficeToPdf officeToPdf;
 
-    @Value("${PREVIEW_BASE_URL:''}")
-    private String previewBaseUrl;
-
     String fileDir = ConfigConstants.getFileDir();
 
     public static final String OFFICE_PREVIEW_TYPE_PDF = "pdf";
@@ -52,12 +47,8 @@ public class OfficeFilePreviewImpl implements FilePreview {
                 .get("officePreviewType") == null ? ConfigConstants.getOfficePreviewType() : model.asMap()
                 .get("officePreviewType")
                 .toString();
-        String baseUrl;
-        if (!StringUtils.isEmpty(this.previewBaseUrl)) {
-            baseUrl = this.previewBaseUrl;
-        } else {
-            baseUrl = (String) RequestContextHolder.currentRequestAttributes().getAttribute("baseUrl", 0);
-        }
+        String baseUrl = fileUtils.getPreviewBaseUrl();
+
         String suffix = fileAttribute.getSuffix();
         String fileName = fileAttribute.getName();
         boolean isHtml = suffix.equalsIgnoreCase("xls") || suffix.equalsIgnoreCase("xlsx");
