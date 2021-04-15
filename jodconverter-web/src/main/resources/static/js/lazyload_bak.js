@@ -9,7 +9,7 @@ function isInSight(el) {
 var index = 0;
 
 function checkImgs() {
-    var imgs = document.getElementsByClassName('my-photo');
+    var imgs = document.querySelectorAll('.my-photo');
     for (var i = index; i < imgs.length; i++) {
         if (isInSight(imgs[i])) {
             loadImg(imgs[i]);

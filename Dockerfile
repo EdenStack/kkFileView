@@ -1,5 +1,5 @@
 ## Step 1 : build os 
-# return ccr.ccs.tencentyun.com/io.eden/filepreview-centos-openoffice:v1.0.0
+## return ccr.ccs.tencentyun.com/io.eden/filepreview-centos-openoffice:v1.0.0
     
 #FROM centos:centos7.6.1810
 #LABEL maintainer="eden.opt@gmail.com"
@@ -30,21 +30,21 @@
 #ENV LANG zh_CN.UTF-8
 #ENV LC_ALL zh_CN.UTF-8
 
-# Step 2 : add fonts	
-# return ccr.ccs.tencentyun.com/io.eden/filepreview-openoffice-with-fonts:v1.0.0 
+## Step 2 : add fonts	
+## return ccr.ccs.tencentyun.com/io.eden/filepreview-openoffice-with-fonts:v1.0.0 
         
 #FROM ccr.ccs.tencentyun.com/io.eden/filepreview-centos-openoffice:v1.0.0
 #LABEL maintainer="eden.opt@gmail.com"
 #
-#COPY fonts/* /usr/share/fonts/chienes/
+#COPY fonts/* /usr/share/fonts/chinese/
 #
-#RUN cd /usr/share/fonts/chienes &&\
+#RUN cd /usr/share/fonts/chinese &&\
 #	mkfontscale &&\
 #	mkfontdir &&\
 #	fc-cache -fv
 
 ## Step 3 : add jar
-# return ccr.ccs.tencentyun.com/io.eden/filepreview:v2.1.11
+## return ccr.ccs.tencentyun.com/io.eden/filepreview:v2.1.11
 
 FROM ccr.ccs.tencentyun.com/io.eden/filepreview-openoffice-with-fonts:v1.0.0
 LABEL maintainer="eden.opt@gmail.com"

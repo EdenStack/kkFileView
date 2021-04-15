@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <title>Office预览</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <script src="js/lazyload.js"></script>
     <style>
